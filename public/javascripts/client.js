@@ -87,7 +87,7 @@
               '<div class="meta-container">' +
                 '<h3 class="blog-post-title">' + post.title + '</h3>' +
                 '<p class="blog-post-content">' + post.content + '</p>' +
-                '<a class="detail-link" href="#details/' + post.id + '">Lees meer <i class="fa fa-arrow-right" aria-hidden="true"></i></a>' +
+                '<a class="detail-link" href="#details/' + post.id + '">Bekijken <i class="fa fa-arrow-right" aria-hidden="true"></i></a>' +
               '</div>'+
               '</div>';
           });
@@ -108,6 +108,7 @@
         console.log(data);
         app.elements.sections.details.innerHTML =
         '<div class="blog-post-detail">' +
+        app.checkForImage(data) +
           '<h3 class="blog-post-title">' + post.title + '</h3>' +
           '<p class="blog-post-content">' + post.content + '</p>' +
 
