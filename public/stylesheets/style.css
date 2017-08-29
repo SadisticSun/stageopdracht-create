@@ -1,0 +1,92 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header nav {
+  width: 50%;
+}
+
+header nav ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  list-style: none;
+}
+
+header nav ul li {
+  margin-left: 1em;
+}
+
+header nav ul li a {
+  text-decoration: none;
+  transition: 0.2s;
+  padding: 0.5em 1em;
+}
+
+header nav ul li a:hover,
+header nav ul li a:focus,
+header nav ul li a:active {
+  transition: 0.2s;
+}
+
+.active {
+  background-color: skyblue;
+  color: white;
+
+  pointer-events: none;
+  cursor: default;
+}
+
+.posts-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.blog-post {
+  display: flex;
+  padding: 1em;
+  border: 1px solid lightgrey;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.img-container {
+  width: 40%;
+}
+.meta-container {
+  position: relative;
+  width: 60%;
+  padding: 0 2em;
+}
+.blog-post-title {
+  font-size: 200%;
+}
+.blog-post-img {
+  width: 100%;
+}
+
+.detail-link {
+  text-decoration: none;
+  color: white;
+  background-color: skyblue;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.hidden {
+  display: none;
+}
