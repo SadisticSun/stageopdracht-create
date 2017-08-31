@@ -90,3 +90,49 @@ header nav ul li a:active {
 .hidden {
   display: none;
 }
+
+#editor-container {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1em 0;
+}
+
+.new-btn {
+  text-decoration: none;
+  cursor: pointer;
+  background: #C22DAA;
+  color: white;
+  padding: 0.5em 1em;
+  line-height: 2em;
+}
+
+.new-btn:hover {
+  background: #6D1A5F;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form input,
+.form textarea {
+  margin: 1em 0;
+  padding: 1em;
+}
+
+.form textarea {
+  height: 20em;
+}
+
+.form .form-submit {
+  width: 10em;
+  background: #96C64E;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.form .form-submit:hover {
+  background: #5BB55B;
+}
