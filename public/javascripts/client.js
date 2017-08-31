@@ -27,6 +27,7 @@
         index: document.getElementById('index'),
         new: document.getElementById('new'),
         details: document.getElementById('details'),
+        detailsEdit: document.getElementById('details-edit'),
         about: document.getElementById('about')
       },
       navigation: {
@@ -37,7 +38,8 @@
         addNew: document.getElementById('add-post')
       },
       forms: {
-        newPostForm: document.getElementById('new-post-form')
+        newPostForm: document.getElementById('new-post-form'),
+        updatePostForm: document.getElementById('update-post-form')
       }
     },
 
@@ -57,6 +59,7 @@
             app.elements.sections.details.classList.add('hidden');
             app.elements.sections.index.classList.remove('hidden');
             app.elements.sections.new.classList.add('hidden');
+            app.elements.sections.detailsEdit.classList.add('hidden');
             app.clearPosts();
             app.renderIndexWithPosts();
           },
@@ -68,22 +71,32 @@
             app.elements.sections.index.classList.add('hidden');
             app.elements.sections.details.classList.add('hidden');
             app.elements.sections.about.classList.remove('hidden');
+            app.elements.sections.detailsEdit.classList.add('hidden');
             app.clearPosts();
           },
           'new': function () {
             app.elements.buttons.addNew.classList.add('hidden');
             app.elements.sections.new.classList.remove('hidden');
+            app.elements.sections.detailsEdit.classList.add('hidden');
             app.clearPosts();
             app.renderNewPostPage();
           },
           'details/:id': function (id) {
             app.elements.buttons.addNew.classList.add('hidden');
-              app.elements.sections.new.classList.add('hidden');
-              app.elements.navigation.index.classList.remove('active');
-              app.elements.navigation.about.classList.remove('active');
-              app.elements.sections.index.classList.add('hidden');
-              app.elements.sections.details.classList.remove('hidden');
-              app.renderDetailPage(id);
+            app.elements.sections.new.classList.add('hidden');
+            app.elements.navigation.index.classList.remove('active');
+            app.elements.navigation.about.classList.remove('active');
+            app.elements.sections.index.classList.add('hidden');
+            app.elements.sections.details.classList.remove('hidden');
+            app.renderDetailPage(id);
+          },
+          'details/:id/edit': function (id) {
+            console.log('editing')
+            app.elements.buttons.addNew.classList.add('hidden');
+            app.elements.sections.new.classList.add('hidden');
+            app.elements.sections.details.classList.add('hidden');
+            app.elements.sections.detailsEdit.classList.remove('hidden');
+            app.renderPostUpdatePage(id);
           }
         });
       }
@@ -96,7 +109,6 @@
     /* Get posts from API and render index section with results
     ===================== */
     renderIndexWithPosts: function () {
-      // Get data from Create API
       aja()
       .url(app.config.apiURL)
       .on('success', function (data) {
@@ -105,15 +117,17 @@
           data.data.forEach(function (post) {
 
             app.elements.sections.index.innerHTML +=
+
+            // If only ES5 had ES6 style string templating :(
               '<div class="blog-post">' +
-              '<div class="img-container">' +
-              app.checkForImage(post) +
-              '</div>' +
-              '<div class="meta-container">' +
-                '<h3 class="blog-post-title">' + post.title + '</h3>' +
-                '<p class="blog-post-content">' + post.content + '</p>' +
-                '<a class="detail-link" href="#details/' + post.id + '">Lees meer <i class="fa fa-arrow-right" aria-hidden="true"></i></a>' +
-              '</div>'+
+                '<div class="img-container">' +
+                  app.checkForImage(post) +
+                '</div>' +
+                '<div class="meta-container">' +
+                  '<h3 class="blog-post-title">' + post.title + '</h3>' +
+                  '<p class="blog-post-content">' + post.content + '</p>' +
+                  '<a class="detail-link" href="#details/' + post.id + '">Lees meer <i class="fa fa-arrow-right" aria-hidden="true"></i></a>' +
+                '</div>'+
               '</div>';
           });
         } else {
@@ -131,8 +145,8 @@
       .url(app.config.apiURL + '/' + postId)
       .on('success', function (data){
         var post = data.data;
-        console.log(data);
         app.elements.sections.details.innerHTML =
+        '<a class="edit-btn" href="#details/' + post.id + '/edit">Bewerk bericht</a>' +
         '<div class="blog-post-detail">' +
           '<h3 class="blog-post-title">' + post.title + '</h3>' +
           '<p class="blog-post-content">' + post.content + '</p>' +
@@ -148,32 +162,77 @@
        '<input type="text" name="image" placeholder="URL naar afbeelding (bijv. http://domein.nl/afbeelding.jpg)">' +
        '<input class="form-submit" type="submit" value="Opslaan">';
       
-       app.elements.forms.newPostForm.addEventListener('submit', function (event) {
-         event.preventDefault();
+      app.elements.forms.newPostForm.addEventListener('submit', function (event) {
+        event.preventDefault();
 
-         var formData = new FormData(this);
+        var formData = {
+          title: app.utils.$$('[name="title"]').value,
+          content: app.utils.$$('[name="content"]').value,
+          image: app.utils.$$('[name="image"]').value
+        }
+        app.saveNewPost(formData);
+      })
+    },
 
-          for (var pair of formData.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]); 
+    renderPostUpdatePage: function (postId) {
+      aja()
+      .url(app.config.apiURL + '/' + postId)
+      .on('success', function (data) {
+        var post = data.data;
+        app.elements.forms.updatePostForm.innerHTML =
+        '<input type="text" name="title" placeholder="Geef een titel op" value="' + post.title + '">' +
+        '<textarea name="content" placeholder="Berichtinhoud">'+ post.content +'</textarea>' + 
+        '<input type="text" name="image" placeholder="URL naar afbeelding (bijv. http://domein.nl/afbeelding.jpg)" value="' + post.image + '">' +
+        '<input class="form-submit" type="submit" value="Bijwerken">';
+
+        app.elements.forms.updatePostForm.addEventListener('submit', function (event) {
+          event.preventDefault();
+  
+          var formData = {
+            title: app.utils.$$('[name="title"]').value,
+            content: app.utils.$$('[name="content"]').value,
+            image: app.utils.$$('[name="image"]').value
           }
-        app.saveNewPost(formData.entries());
-       })
+          app.updatePost(postId, formData);
+        })
+      })
+      .go();
     },
 
     /* Save new post to API
     ===================== */
-
     saveNewPost: function (newPost) {
+      var http = new XMLHttpRequest();
+      var url = app.config.apiURL;
+      var params = "title=" + newPost.title + "&content=" + newPost.content + "&Image=" + newPost.image;
+      http.open("POST", url, true);
+      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      
+      http.onreadystatechange = function() {
+          if(http.readyState == 4 && http.status == 200) {
+              location.hash = '#index';
+          }
+      }
 
-      aja()
-      .method('post')
-      .header('Content-Type', 'application/json')
-      .url(app.config.apiURL)
-      .body(newPost)
-      .on('200', function(response){
-        location.hash = 'index';
-      })
-      .go();
+      http.send(params);
+    },
+
+    updatePost: function (id, postData) {
+      var http = new XMLHttpRequest();
+      var url = app.config.apiURL + "/" + id;
+      var params = "title=" + postData.title + "&content=" + postData.content + "&Image=" + postData.image;
+      
+      http.open("POST", url, true);
+      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      
+      http.onreadystatechange = function() {
+          if(http.readyState == 4 && http.status == 200) {
+            alert('Update done');
+              location.hash = '#index';
+          }
+      }
+
+      // http.send(params);
     },
 
     /* Check if post has image, else => use placeholder
@@ -192,6 +251,12 @@
     ===================== */
     clearPosts: function () {
       app.elements.sections.index.innerHTML = '';
+    },
+
+    /* Next Page
+    ===================== */
+    nextPage: function () {
+
     },
 
     /* Main initalizer
