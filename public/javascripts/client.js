@@ -49,9 +49,9 @@
       init: function () {
         routie({
           '': function () {
-            location.hash = "#index";
+            location.hash = "#index/1";
           },
-          'index': function () {
+          'index/:page': function (page) {
             app.elements.buttons.addNew.classList.remove('hidden');
             app.elements.navigation.index.classList.add('active');
             app.elements.navigation.about.classList.remove('active');
@@ -61,7 +61,7 @@
             app.elements.sections.new.classList.add('hidden');
             app.elements.sections.detailsEdit.classList.add('hidden');
             app.clearPosts();
-            app.renderIndexWithPosts();
+            app.renderIndexWithPosts(page);
           },
           'about': function () {
             app.elements.buttons.addNew.classList.add('hidden');
@@ -108,20 +108,22 @@
 
     /* Get posts from API and render index section with results
     ===================== */
-    renderIndexWithPosts: function () {
+    renderIndexWithPosts: function (pageNumber) {
       aja()
-      .url(app.config.apiURL)
+      .url(app.config.apiURL + '?page=' + pageNumber)
       .on('success', function (data) {
-        console.log(data);
-        if (Array.isArray(data.data)) {
-          data.data.forEach(function (post) {
+        var posts = data.data;
+        var meta = data.meta;
+
+        if (Array.isArray(posts)) {
+         posts.forEach(function (post) {
 
             app.elements.sections.index.innerHTML +=
 
             // If only ES5 had ES6 style string templating :(
               '<div class="blog-post">' +
                 '<div class="img-container">' +
-                  app.checkForImage(post) +
+                  '<img class="blog-post-img" src="' + app.checkForImage(post) + '">' + 
                 '</div>' +
                 '<div class="meta-container">' +
                   '<h3 class="blog-post-title">' + post.title + '</h3>' +
@@ -133,6 +135,27 @@
         } else {
           app.elements.sections.index.innerHTML =
             '<p>Geen berichten gevonden</p>';
+        };
+
+        renderPagination();
+
+        function renderPagination () {
+          app.elements.sections.index.innerHTML +=
+          '<div class="pagination">' +
+            '<p>Pagina: </p>' +
+            '<ul id="page-list"></ul>' + 
+          '</div>';
+          showPageCount(meta);
+
+          function showPageCount (meta) {
+            var pageList = document.getElementById('page-list');
+            for (var page = 0; page < meta.pagination.total_pages; page++) {
+              var pageNumber = page + 1;
+              var html = '<li><a href="#index/'+ pageNumber +'">' + pageNumber + '</a></ul>';
+              pageList.innerHTML += html;
+            };
+          };
+          
         };
       })
       .go();
@@ -146,9 +169,13 @@
       .on('success', function (data){
         var post = data.data;
         app.elements.sections.details.innerHTML =
-        '<a class="edit-btn" href="#details/' + post.id + '/edit">Bewerk bericht</a>' +
+        '<div class="btn-container">' +
+          '<a class="edit-btn" href="#details/' + post.id + '/edit">Bewerk bericht</a>' +
+          '<a class="back-btn" href="#index/1">Annuleren</a>' +
+        '</div>' +
+        
         '<div class="blog-post-detail">' +
-        app.checkForImage(data) +
+          '<img class="blog-post-img-detail" src="' + app.checkForImage(post) + '">' + 
           '<h3 class="blog-post-title">' + post.title + '</h3>' +
           '<p class="blog-post-content">' + post.content + '</p>' +
         '</div>';
@@ -161,7 +188,10 @@
        '<input type="text" name="title" placeholder="Geef een titel op">' +
        '<textarea name="content" placeholder="Berichtinhoud"></textarea>' + 
        '<input type="text" name="image" placeholder="URL naar afbeelding (bijv. http://domein.nl/afbeelding.jpg)">' +
-       '<input class="form-submit" type="submit" value="Opslaan">';
+       '<div class="btn-container">' +
+        '<input class="form-submit" type="submit" value="Opslaan">' +
+        '<a class="back-btn" href="#index/1">Annuleren</a>' +
+       '</div>'
       
       app.elements.forms.newPostForm.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -184,7 +214,10 @@
         '<input type="text" name="title" placeholder="Geef een titel op" value="' + post.title + '">' +
         '<textarea name="content" placeholder="Berichtinhoud">'+ post.content +'</textarea>' + 
         '<input type="text" name="image" placeholder="URL naar afbeelding (bijv. http://domein.nl/afbeelding.jpg)" value="' + post.image + '">' +
-        '<input class="form-submit" type="submit" value="Bijwerken">';
+        '<div class="btn-container">' +
+          '<input class="form-submit" type="submit" value="Bijwerken">' +
+        '<a class="back-btn" href="#index/1">Annuleren</a>' +
+       '</div>'
 
         app.elements.forms.updatePostForm.addEventListener('submit', function (event) {
           event.preventDefault();
@@ -212,7 +245,7 @@
       
       http.onreadystatechange = function() {
           if(http.readyState == 4 && http.status == 200) {
-              location.hash = '#index';
+              location.hash = '#index/1';
           }
       }
 
@@ -221,16 +254,17 @@
 
     updatePost: function (id, postData) {
       var http = new XMLHttpRequest();
+      
       var url = app.config.apiURL + "/" + id;
-      console.log(url)
-      var params = "title=" + postData.title + "&content=" + postData.content + "&Image=" + postData.image;
+      console.log(url);
+      var params = "title=" + postData.title + "&content=" + postData.content + "&image=" + postData.image;
       
       http.open("POST", url, true);
       http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       
       http.onreadystatechange = function() {
           if(http.readyState == 4 && http.status == 200) {
-              location.hash = '#index';
+              location.hash = '#index/1';
           }
       }
 
@@ -241,11 +275,9 @@
     ===================== */
     checkForImage: function (blogpost) {
       if (blogpost.image == null) {
-        var html = '<img class="blog-post-img" src="images/placeholder.gif" alt="Geen afbeelding">';
-        return html;
+        return "images/placeholder.gif";
       } else {
-        var html = '<img class="blog-post-img" src="'+ blogpost.image + '">';
-        return html;
+        return blogpost.image;
       }
     },
 
