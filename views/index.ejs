@@ -18,22 +18,38 @@
     </header>
 
     <main>
-      <section id="index" class="posts-container"></section>
-      <section id="details" class="detail-container">
-      </section>
-      <section id="about" class="hidden">
-        <h1>Over deze app</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-          esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-          sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      </section>
+      <div id="editor-container">
+        <a id="add-post" class="new-btn" href="#new"><i class="fa fa-plus" aria-hidden="true"></i> Nieuw bericht</a>
+      </div>
+      <div id="index" class="posts-container"></div>
+      <div id="new" class="new-post-container">
+        <section>
+            <h2>Nieuw bericht maken</h2>
+            <form enctype="multipart/form-data" id="new-post-form" class="form" action="#" method="post">
+            </form>
+        </section>
+      </div>
+      <div id="details" class="detail-container"></div>
+      <div id="details-edit" class="detail-container">
+          <section>
+              <h2>Bericht bewerken</h2>
+              <form enctype="multipart/form-data" id="update-post-form" class="form" action="#" method="put">
+              </form>
+          </section>
+      </div>
+      <div id="about" class="hidden">
+        <section>
+            <h2>Over deze app</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+              magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+              aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+              esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+              sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </section>
+      </div>
     </main>
 
   </body>
-  <script type="text/javascript" src="http://localhost:35729/livereload.js">
-  </script>
   <script type="text/javascript" src="javascripts/vendor/aja.min.js"></script>
   <script type="text/javascript" src="javascripts/vendor/routie.js"></script>
   <script type="text/javascript" src="javascripts/client.js"></script>
