@@ -188,6 +188,7 @@
 
         app.elements.forms.updatePostForm.addEventListener('submit', function (event) {
           event.preventDefault();
+          console.log('submitted');
   
           var formData = {
             title: app.utils.$$('[name="title"]').value,
@@ -221,6 +222,7 @@
     updatePost: function (id, postData) {
       var http = new XMLHttpRequest();
       var url = app.config.apiURL + "/" + id;
+      console.log(url)
       var params = "title=" + postData.title + "&content=" + postData.content + "&Image=" + postData.image;
       
       http.open("POST", url, true);
@@ -228,12 +230,11 @@
       
       http.onreadystatechange = function() {
           if(http.readyState == 4 && http.status == 200) {
-            alert('Update done');
               location.hash = '#index';
           }
       }
 
-      // http.send(params);
+      http.send(params);
     },
 
     /* Check if post has image, else => use placeholder
