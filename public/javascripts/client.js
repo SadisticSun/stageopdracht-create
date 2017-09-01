@@ -114,9 +114,11 @@
       .on('success', function (data) {
         var posts = data.data;
         var meta = data.meta;
-
+        app.elements.sections.index.innerHTML +=
+        '<span class="post-counter">' + posts.length + ' berichten op deze pagina</span>'; 
         if (Array.isArray(posts)) {
          posts.forEach(function (post) {
+           var trimmedContent = post.content.substring(0, 400);
 
             app.elements.sections.index.innerHTML +=
 
@@ -127,7 +129,7 @@
                 '</div>' +
                 '<div class="meta-container">' +
                   '<h3 class="blog-post-title">' + post.title + '</h3>' +
-                  '<p class="blog-post-content">' + post.content + '</p>' +
+                  '<p class="blog-post-content">' + trimmedContent + '...</p>' +
                   '<a class="detail-link" href="#details/' + post.id + '">Lees meer <i class="fa fa-arrow-right" aria-hidden="true"></i></a>' +
                 '</div>'+
               '</div>';

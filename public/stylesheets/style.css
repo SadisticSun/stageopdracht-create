@@ -3,9 +3,20 @@ body {
   font-family: 'Roboto', sans-serif;
   width: 70em;
   margin: 0 auto;
+  background: #ecf0f1;
+  color: #333;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Roboto Slab', serif;
+}
+
+p {
+  line-height: 1.5em;
 }
 
 a {
+  font-family: 'Roboto Slab', serif;
   color: #00B7FF;
 }
 
@@ -50,6 +61,13 @@ header nav ul li a:active {
   cursor: default;
 }
 
+.post-counter {
+  margin-bottom: 1em;
+  color: grey;
+  font-family: 'Roboto Slab', serif;
+  font-style: italic;
+}
+
 .posts-container {
   display: flex;
   flex-wrap: wrap;
@@ -57,10 +75,9 @@ header nav ul li a:active {
 
 .blog-post {
   display: flex;
-  padding: 1em;
-  border: 1px solid lightgrey;
+  background: white;
   width: 100%;
-  margin-bottom: 1em;
+  margin-bottom: 2em;
 }
 
 .img-container {
@@ -70,20 +87,23 @@ header nav ul li a:active {
 .meta-container {
   position: relative;
   width: 60%;
-  padding: 0 2em;
+  padding: 2em 2em 0;
 }
 
 .blog-post-title {
-  margin-top: 0;
+  margin: 0;
   font-size: 200%;
+  text-transform: capitalize;
 }
 
 .blog-post-content {
   padding: 1em 0;
+  margin: 0;
 }
 
 .blog-post-img {
   width: 100%;
+  height: 100%;
 }
 
 .blog-post-img-detail {
@@ -91,18 +111,22 @@ header nav ul li a:active {
 }
 
 .detail-link {
+  position: absolute;
   font-weight: bold;
   text-decoration: none;
   color: white;
   background-color: skyblue;
-  padding: 0.5em 1em;
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  padding: 0.7em 2em;
+  opacity: 0.9;
+  bottom: -1em;
+  right: -1em;
+  transition: 0.2s;
 }
 
 .detail-link:hover {
   background: deepskyblue;
+  transition: 0.2s;
+  padding: 0.7em 3em;
 }
 
 .hidden {
@@ -210,4 +234,13 @@ header nav ul li a:active {
 
 #page-list li {
   margin: 0 1em;
+}
+
+#about {
+  padding: 2em 5em;
+  background: white;
+}
+
+#about ul li {
+  margin-bottom: 1em;
 }
