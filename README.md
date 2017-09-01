@@ -19,3 +19,4 @@ Het resultaat is een mini Blog systeem, gemaakt met VanillaJS en met ondersteuni
 3. In de terminal, navigeer naar de lokale versie van deze repository
 4. Installeer benodigde packages met ```npm install --save```
 5. Start applicatie met ```node app.js``` of ```nodemon app.js```
+6. Bekijk app in de browser op ```localhost:8080```
