@@ -114,10 +114,14 @@
       .on('success', function (data) {
         var posts = data.data;
         var meta = data.meta;
+
         app.elements.sections.index.innerHTML +=
         '<span class="post-counter">' + posts.length + ' berichten op deze pagina</span>'; 
+
         if (Array.isArray(posts)) {
          posts.forEach(function (post) {
+
+           // Limit the amount of characters to show on the index page per blog post
            var trimmedContent = post.content.substring(0, 400);
 
             app.elements.sections.index.innerHTML +=
@@ -287,12 +291,6 @@
     ===================== */
     clearPosts: function () {
       app.elements.sections.index.innerHTML = '';
-    },
-
-    /* Next Page
-    ===================== */
-    nextPage: function () {
-
     },
 
     /* Main initalizer
